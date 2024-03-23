@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Geomancy Chart Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .chart {
+      display: inline-block;
+      border: 1px solid #000; /* Added border for the chart */
+      padding: 20px;
+    }
+
+.figure {
+  position: relative;
+  width: 60px; /* Adjust width if necessary */
+  height: 95px; /* Adjust height to accommodate labels without overlap */
+  margin: 15px; /* Margin around figures */
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px; /* Space out the rows */
+}
+
+.house {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  background: white;
+  padding: 2px 4px;
+}
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 3px; /* Keep dots close together */
+  border-radius: 50%;
+  background-color: black;
+  cursor: pointer;
+}
+
+.label {
+  font-size: 12px; /* Adjust font size if necessary */
+  position: absolute;
+  bottom: -20px;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  left: 50%;
+}
+
+    
+  </style>
+</head>
+<body>
+  <h1>Geomancy Chart Generator</h1>
+  <div class="chart">
+    <div class="row">
+      <!-- Top row 8 to 1 -->
+      <div class="figure" id="figure8">
+        <div class="house">8</div>
+      </div>
+      <div class="figure" id="figure7">
+        <div class="house">7</div>
+      </div>
+      <div class="figure" id="figure6">
+        <div class="house">6</div>
+      </div>
+      <div class="figure" id="figure5">
+        <div class="house">5</div>
+      </div>
+      <div class="figure" id="figure4">
+        <div class="house">4</div>
+      </div>
+      <div class="figure" id="figure3">
+        <div class="house">3</div>
+      </div>
+      <div class="figure" id="figure2">
+        <div class="house">2</div>
+      </div>
+      <div class="figure" id="figure1">
+        <div class="house">1</div>
+      </div>
+    </div>
+    <div class="row">
+      <!-- Second row 12 to 9 -->
+      <div class="figure" id="figure12">
+        <div class="house">12</div>
+      </div>
+      <div class="figure" id="figure11">
+        <div class="house">11</div>
+      </div>
+      <div class="figure" id="figure10">
+        <div class="house">10</div>
+      </div>
+      <div class="figure" id="figure9">
+        <div class="house">9</div>
+      </div>
+    </div>
+    <div class="row">
+      <!-- Witnesses -->
+      <div class="figure" id="figure14">
+        <div class="house">LW</div>
+      </div>
+      <div class="figure" id="figure13">
+        <div class="house">RW</div>
+      </div>
+    </div>
+    <div class="row">
+      <!-- Judge -->
+      <div class="figure" id="figure15">
+        <div class="house">J</div>
+      </div>
+    </div>
+  </div>
+  <!-- Button container -->
+  <div class="button-container">
+    <button onclick="generateNewShield()">Generate New Shield</button>
+  </div>
+
+
+  <script>
+    const figures = [
+      { name: "Puer",        dots: [1, 1, 2, 1] },
+      { name: "Puella",      dots: [1, 2, 1, 1] }, 
+      { name: "Albus",       dots: [2, 2, 1, 2] },
+      { name: "Rubeus",      dots: [2, 1, 2, 2] },
+      { name: "Laetitia",    dots: [1, 2, 2, 2] },
+      { name: "Tristitia",   dots: [2, 2, 2, 1] },
+      { name: "Acquisitio",  dots: [2, 1, 2, 1] },
+      { name: "Amissio",     dots: [1, 2, 1, 2] },
+      { name: "Fortuna Major", dots: [2, 2, 1, 1] },
+      { name: "Fortuna Minor", dots: [1, 1, 2, 2] },
+      { name: "Conjunctio",  dots: [2, 1, 1, 2] },
+      { name: "Carcer",      dots: [1, 2, 2, 1] },
+      { name: "Caput Draconis", dots: [2, 1, 1, 1] },
+      { name: "Cauda Draconis", dots: [1, 1, 1, 2] },
+      { name: "Via",         dots: [1, 1, 1, 1] },
+      { name: "Populus",     dots: [2, 2, 2, 2] }
+    ];
+
+    let mother1 = [1, 1, 2, 1]; 
+    let mother2 = [1, 1, 2, 1];
+    let mother3 = [1, 1, 2, 1];
+    let mother4 = [1, 1, 2, 1];
+    function generateNewShield() {
+      // Generate random values for each mother figure
+      mother1 = generateRandomFigure();
+      mother2 = generateRandomFigure();
+      mother3 = generateRandomFigure();
+      mother4 = generateRandomFigure();
+
+      // Redraw the chart with the new values
+      createMotherFigure(1, mother1);
+      createMotherFigure(2, mother2);
+      createMotherFigure(3, mother3);
+      createMotherFigure(4, mother4);
+      calculateChart();
+    }
+
+    // Function to generate a random figure
+    function generateRandomFigure() {
+      return Array.from({ length: 4 }, () => Math.random() > 0.5 ? 2 : 1);
+    }
+
+    function createMotherFigure(figure, mother) {
+  const figureElement = document.getElementById(`figure${figure}`);
+  // Remove only dot and label elements
+  figureElement.querySelectorAll('.dot, .label').forEach(el => el.remove());
+
+  for (let i = 0; i < 4; i++) {
+    const line = document.createElement("div");
+    for (let j = 0; j < mother[i]; j++) {
+      const dot = document.createElement("div");
+      dot.classList.add("dot");
+      dot.addEventListener("click", () => toggleDot(figure, i));
+      line.appendChild(dot);
+    }
+    figureElement.appendChild(line);
+  }
+
+  const figureName = figures.find(f => f.dots.join(",") === mother.join(",")).name;
+  const label = document.createElement("div");
+  label.classList.add("label");
+  label.textContent = figureName;
+  figureElement.appendChild(label);
+}
+
+
+    function toggleDot(figure, line) {
+      const mother = eval(`mother${figure}`);
+      mother[line] = mother[line] === 1 ? 2 : 1;
+      createMotherFigure(figure, mother);
+      calculateChart();
+    }
+
+    function calculateChart() {
+      // Daughters
+      const daughter1 = [mother1[0], mother2[0], mother3[0], mother4[0]];
+      const daughter2 = [mother1[1], mother2[1], mother3[1], mother4[1]];
+      const daughter3 = [mother1[2], mother2[2], mother3[2], mother4[2]];
+      const daughter4 = [mother1[3], mother2[3], mother3[3], mother4[3]];
+      
+      drawFigure(5, daughter1);
+      drawFigure(6, daughter2); 
+      drawFigure(7, daughter3);
+      drawFigure(8, daughter4);
+
+      // Nieces  
+      const niece1 = calculateNiece(mother1, mother2);
+      const niece2 = calculateNiece(mother3, mother4);
+      const niece3 = calculateNiece(daughter1, daughter2);
+      const niece4 = calculateNiece(daughter3, daughter4);
+
+      drawFigure(9, niece1);
+      drawFigure(10, niece2);
+      drawFigure(11, niece3); 
+      drawFigure(12, niece4);
+
+      // Witnesses
+      const rightWitness = calculateNiece(niece1, niece2);
+      const leftWitness = calculateNiece(niece3, niece4);
+
+      drawFigure(13, rightWitness);
+      drawFigure(14, leftWitness);
+
+      // Judge
+      const judge = calculateNiece(rightWitness, leftWitness);
+      drawFigure(15, judge);
+    }
+
+    function calculateNiece(figure1, figure2) {
+      return figure1.map((dot, i) => (dot + figure2[i]) % 2 === 0 ? 2 : 1);
+    }
+
+    function drawFigure(index, dots) {
+  const figure = document.getElementById(`figure${index}`);
+  // Remove only dot and label elements
+  figure.querySelectorAll('.dot, .label').forEach(el => el.remove());
+
+  for (const numDots of dots) {
+    const line = document.createElement("div");
+    for (let i = 0; i < numDots; i++) {
+      const dot = document.createElement("div");
+      dot.classList.add("dot");
+      line.appendChild(dot);
+    }
+    figure.appendChild(line);
+  }
+
+  const label = document.createElement("div");
+  label.classList.add("label");
+  label.textContent = figures.find(f => f.dots.join(",") === dots.join(",")).name;
+  figure.appendChild(label);
+}
+
+
+    createMotherFigure(1, mother1);
+    createMotherFigure(2, mother2);
+    createMotherFigure(3, mother3);
+    createMotherFigure(4, mother4);
+    calculateChart();
+  </script>
+</body>
+</html>
